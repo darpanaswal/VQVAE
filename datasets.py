@@ -1,9 +1,12 @@
+import os
 import torch
 import torchaudio
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchvision.datasets import MNIST, FashionMNIST
 
+base_directory = os.getcwd()
+base_directory += "/VQVAE"
 
 def get_cifar10(batch_size=128, num_workers=4, root='./data'):
     transform = transforms.Compose([
@@ -20,7 +23,7 @@ def get_cifar10(batch_size=128, num_workers=4, root='./data'):
     return train_loader, test_loader
 
 
-def get_vctk(batch_size=32, num_workers=4, root='./data/VCTK', sample_rate=16000):
+def get_vctk(batch_size=32, num_workers=4, root=f'./{base_directory}/data/VCTK', sample_rate=16000):
     transform = torchaudio.transforms.Resample(orig_freq=48000, new_freq=sample_rate)
 
     def collate_fn(batch):
@@ -36,7 +39,7 @@ def get_vctk(batch_size=32, num_workers=4, root='./data/VCTK', sample_rate=16000
 
     return loader
 
-def get_mnist(batch_size=128, num_workers=4, root="./data", dataset="mnist"):
+def get_mnist(batch_size=128, num_workers=4, root=f"./{base_directory}/data", dataset="mnist"):
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.5,), (0.5,))
@@ -52,7 +55,7 @@ def get_mnist(batch_size=128, num_workers=4, root="./data", dataset="mnist"):
     return train_loader, test_loader
 
 
-def get_dataset(name="cifar10", batch_size=128, num_workers=4, root="./data"):
+def get_dataset(name="cifar10", batch_size=128, num_workers=4, root=f"./{base_directory}/data"):
     name = name.lower()
     if name == "cifar10":
         return get_cifar10(batch_size, num_workers, root)
