@@ -1,3 +1,4 @@
+import os
 import argparse
 from model import LitVQVAE
 import pytorch_lightning as pl
@@ -6,6 +7,8 @@ from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
 
 def parse_args():
+    base_directory = os.getcwd()
+    base_directory += "/VQVAE"
     parser = argparse.ArgumentParser(description="Train VQ-VAE")
 
     # Training config
@@ -28,7 +31,7 @@ def parse_args():
 
     # Logging & saving
     parser.add_argument("--log_dir", type=str, default="runs")
-    parser.add_argument("--save_dir", type=str, default="checkpoints")
+    parser.add_argument("--save_dir", type=str, default=f"{base_directory}/checkpoints")
 
     return parser.parse_args()
 
