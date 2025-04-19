@@ -30,7 +30,7 @@ def parse_args():
     parser.add_argument("--use_ema", action="store_true", help="Enable EMA for VQ updates")
 
     # Logging & saving
-    parser.add_argument("--log_dir", type=str, default="runs")
+    parser.add_argument("--log_dir", type=str, default=f"{base_directory}/runs")
     parser.add_argument("--save_dir", type=str, default=f"{base_directory}/checkpoints")
 
     return parser.parse_args()
