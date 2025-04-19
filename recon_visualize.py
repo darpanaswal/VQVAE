@@ -13,7 +13,7 @@ def show_reconstructions(model, dataloader, device, num_samples=8, save_path=Non
     with torch.no_grad():
         x, _ = next(iter(dataloader))
         x = x[:num_samples].to(device)
-        x_recon, _ = model(x)
+        x_recon, _, _ = model(x)
 
         x = x.cpu().numpy().transpose(0, 2, 3, 1)
         x_recon = x_recon.cpu().numpy().transpose(0, 2, 3, 1)
@@ -46,7 +46,11 @@ def parse_args():
 
 def main():
     args = parse_args()
-    config = torch.load(args.checkpoint)["hyper_parameters"]
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if device.type == "cuda":
+        config = torch.load(args.checkpoint)["hyper_parameters"]
+    else:
+        config = torch.load(args.checkpoint, map_location=torch.device('cpu'))["hyper_parameters"]
 
     # Dataset-aware channel override
     if args.dataset in {"mnist", "fashionmnist"}:
@@ -54,8 +58,7 @@ def main():
 
     _, test_loader = get_dataset(name=args.dataset, batch_size=32)
 
-    model = LitVQVAE(config)
-    model.load_from_checkpoint(args.checkpoint, config=config)
+    model = LitVQVAE.load_from_checkpoint(args.checkpoint, config=config)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     show_reconstructions(model, test_loader, device, num_samples=args.num_samples, save_path=args.save_path)
